@@ -1,4 +1,4 @@
-package countdown.babycountdown;
+package com.seer3g.babycountdown;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.ini4j.Wini;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -89,6 +91,8 @@ public class ConfDialog extends JDialog {
 	String[] months = {" January", " February", " March", " April", " May", " June", 
 					   " July", " August" , " September", " October", " November", " December"};
 	private JTextField txtYear;
+	
+	final Logger logger = LoggerFactory.getLogger(App.class);
 
 	private String buildDueDateString() {
     	int iMonth = comboBox.getSelectedIndex()+1;
@@ -121,8 +125,7 @@ public class ConfDialog extends JDialog {
 		try{
 			File f = new File("countdown.ini");
 			if (!f.exists()) {
-				System.out.println("ERROR in ConfDialog: countdown.ini do not exist");
-				System.out.println("Creating the file");
+				logger.error("ConfDialog: countdown.ini do not exist - Creating the file");
 				f.createNewFile();
 		   	}
         	Wini ini = new Wini(f);
@@ -144,7 +147,8 @@ public class ConfDialog extends JDialog {
         // To catch basically any error related to writing to the file
         // (The system cannot find the file specified)
         }catch(Exception e){
-            System.err.println(e.getStackTrace());
+        	logger.error("Error trying to save countdown.ini");
+        	logger.error(e.getStackTrace().toString());
         }
 	}
 
@@ -174,6 +178,7 @@ public class ConfDialog extends JDialog {
 				} 				
 			}
 		});
+		logger.debug("ConfDIalog constructor");
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ConfDialog.class.getResource("/SmallIcons/Settings24.png")));
 		setFont(new Font("DejaVu Serif", Font.PLAIN, 12));
@@ -256,7 +261,7 @@ public class ConfDialog extends JDialog {
 				btnOk.setIcon(new ImageIcon(ConfDialog.class.getResource("/SmallIcons/Check.png")));
 				btnOk.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						System.out.println("Click Ok (Save)");
+						logger.debug("Clicked OK (Save config");
 						if (isDueDateValid()) {
 							saveIni();
 							dispose();

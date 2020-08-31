@@ -1,4 +1,4 @@
-package countdown.babycountdown;
+package com.seer3g.babycountdown;
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -9,8 +9,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-
 import org.ini4j.Wini;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -46,18 +47,16 @@ public class App {
 	String strDays = "0 days";	
 	boolean showDueDate = true;
 	String strDueDate = "";
-	
-	
 	static boolean configOK = false;
+	final Logger logger = LoggerFactory.getLogger(App.class);
 	
  	private void readIni() {
-		//DEBUG
-		System.out.println("Ejecutando readIni");
+ 		logger.debug("Ejecutando readIni");
 		try {
 			File f = new File("countdown.ini");
 			if (!f.exists()) {
 				f = null;
-				System.out.println("ERROR in readIni: countdown.ini do not exist");
+				logger.info("readIni: countdown.ini do not exist - Calling config dialog");
 				displayConfigDialog(true);
 				//TODO Validar si se creo exitosament archivo INI
 		   	} 
@@ -72,7 +71,7 @@ public class App {
             try {
             	dueDate = LocalDate.parse(sDueDate);
             } catch (Exception e) {
-            	System.out.println(e.getMessage());
+            	logger.error(e.getMessage());
             	dueDate = LocalDate.now().plusMonths(9);
             	ini.put("config", "duedate", dueDate.toString());
             	ini.store();
@@ -112,11 +111,9 @@ public class App {
 				showDueDate = false;
 				strDueDate = ""; 				
 			}
-			
-			//TODO
-			System.out.println(sDueDate);		   	
+	   	
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		
 	}
@@ -128,9 +125,7 @@ public class App {
 		confDialog.setShowDueDate(showDueDate);
 		confDialog.setForceSave(tForceSave);
 		confDialog.setVisible(true);
-		//TODO
-		System.out.println("Despues de cerrar ConfigDialog");
-		
+		logger.debug("Despues de cerrar ConfigDialog");	
 	}
 	
 
@@ -138,6 +133,7 @@ public class App {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				//leer ini file						
@@ -152,7 +148,7 @@ public class App {
 		});
 	}
 	
-//	private static Logger logger = LogManager.getLogger(Countdown.class);
+
 
 	/**
 	 * Create the application.
@@ -166,7 +162,8 @@ public class App {
 	 */
 	private void initialize() {
 		readIni();
-		//logger.info("Starting");
+        //logger.error("Error Message Logged !!!", new NullPointerException("NullError"));
+        logger.info("Starting BabyCountdown");
 		frmBabyCountdown = new JFrame();
 		frmBabyCountdown.setResizable(false);
 		frmBabyCountdown.setIconImage(Toolkit.getDefaultToolkit().getImage(App.class.getResource("/resources/012_026_newborn_infant_child_baby-256.png")));

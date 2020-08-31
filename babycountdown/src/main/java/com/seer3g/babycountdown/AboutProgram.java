@@ -1,4 +1,4 @@
-package countdown.babycountdown;
+package com.seer3g.babycountdown;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
